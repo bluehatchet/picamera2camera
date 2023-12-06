@@ -1,4 +1,7 @@
 #!/usr/bin/python3
+import os
+from gpiozero import Button
+
 
 # This example is essentially the same as app_capture.py, however here
 # we use the Qt signal/slot mechanism to get a callback (capture_done)
@@ -10,6 +13,9 @@ from PyQt5.QtWidgets import (QApplication, QHBoxLayout, QLabel, QPushButton,
 
 from picamera2 import Picamera2
 from picamera2.previews.qt import QGlPicamera2
+# Set up the button
+button01 = Button(4)
+
 
 
 def post_callback(request):
@@ -29,6 +35,7 @@ def on_button_clicked():
     cfg = picam2.create_still_configuration()
     timestamp = datetime.now().isoformat()
     picam2.switch_mode_and_capture_file(cfg, ('/home/admin/%s.jpg' % timestamp), signal_function=qpicamera2.signal_done)
+    
 
 
 def capture_done(job):
@@ -41,8 +48,8 @@ button = QPushButton("Click to capture JPEG")
 label = QLabel()
 window = QWidget()
 qpicamera2.done_signal.connect(capture_done)
+button01.when_pressed = on_button_clicked
 button.clicked.connect(on_button_clicked)
-
 label.setFixedWidth(400)
 label.setAlignment(QtCore.Qt.AlignTop)
 layout_h = QHBoxLayout()
